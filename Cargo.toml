@@ -1,6 +1,6 @@
 [package]
-name = "split"
-version = "0.1.0"
+name = "msplit"
+version = "0.0.1"
 authors = ["Fenimore Love <exorable.ludos@gmail.com>"]
 edition = "2018"
 

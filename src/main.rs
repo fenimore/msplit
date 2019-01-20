@@ -42,10 +42,13 @@ fn main() {
     let args: Vec<_> = env::args().collect();
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
-        Err(e) => panic!(e.to_string()),
+        Err(_) => {
+            println!("{}", USAGE);
+            return
+        },
     };
     if matches.opt_present("h") {
-        println!("{:}", USAGE);
+        println!("{}", USAGE);
         return;
     };
 
@@ -76,13 +79,19 @@ fn main() {
     let path: &Path = Path::new(filename);
 
     let fileinfo: Metadata = match fs::metadata(path) {
-        Err(e) => panic!("No such file {}", e),
         Ok(result) => result,
+        Err(_) => {
+            println!("File does not exist:\n\n{}", USAGE);
+            return
+        },
     };
 
     let mut file_iter = match File::open(filename) {
-        Err(e) => panic!("Couldn't open file {}", e),
         Ok(f) => f,
+        Err(_) => {
+            println!("Couldn't open file {}\n\n{}", filename, USAGE);
+            return
+        },
     }.bytes();
 
     //////////////////////
@@ -147,14 +156,8 @@ fn main() {
 
             let mut f: File = File::create(output_path).expect("Could not create file");
 
-            let n = f.write(header.as_slice()).expect("Unable to write to header");
-            if n != header_bytes as usize {
-                panic!("Wrote too few bytes to file");
-            }
-            let n = f.write(buffer.as_slice()).expect("Unable to write frame to file");
-            if n != buffer.len() as usize {
-                panic!("Wrote too few bytes to file");
-            }
+            let _ = f.write(header.as_slice()).expect("Unable to write to header");
+            let _ = f.write(buffer.as_slice()).expect("Unable to write frame to file");
 
             bytes_written = bytes_written + buffer.len();
             seconds_written = position;

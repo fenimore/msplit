@@ -1,0 +1,9 @@
+[package]
+name = "split"
+version = "0.1.0"
+authors = ["Fenimore Love <exorable.ludos@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+getopts = "0.2"
+mp3-metadata = "0.3.0"
